@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from .models import concesionesMaritimas
 from time import sleep
 from json import dump
 
@@ -94,10 +95,27 @@ def get_concesiones(request):
             
         browser.quit()
             
+        
+        # Creacion de archivo .json
         nombre_archivo = "output_datos_tabla.json"
         with open(nombre_archivo, "w") as archivo_json:
             dump(datos_tabla, archivo_json)
 
+        #insercion de datos a tabla reto2_concesionesmaritimas
+        for fila in datos_tabla:
+            instancia_concesion = concesionesMaritimas(numero_id=int(fila[0]), 
+                                        numero_concesion=int(fila[1]), 
+                                        tipo_de_concesion=fila[2],
+                                        comuna=fila[3], 
+                                        lugar=fila[4],
+                                        numero_rs_ds=fila[5], 
+                                        tipo_tramite=fila[6],
+                                        concersionario=fila[7],
+                                        tipo_vigencia=fila[8])
+            instancia_concesion.save()
+
+    
+    
         return HttpResponse(datos_tabla)
          
     except Exception as exception:
