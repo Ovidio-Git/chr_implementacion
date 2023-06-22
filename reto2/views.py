@@ -12,14 +12,14 @@ from json import dump
 
 
 
-
+# Se declara una lista vacia para almacenar los datos de la tabla
 datos_tabla = []
+# Se declara una lista vacia para almacenar los datos de paginacion la tabla
 numeros_navegacion_tabla = []
 
 
 def get_concesiones(request):
-    
-    #Declaracion de variables
+    # Declaracion de variables
     url = "https://www.concesionesmaritimas.cl/C_ConcesionesVigentes.jsp?ind=9&cons=1&variable=0&maritimas=0&acuicolas=0&permisos=0&carga=0"
     xpath_seleccione_region="/html/body/font/form/center/table[1]/tbody/tr[2]/td[1]/select"
     xpath_seleccione_gobernacion_maritima="/html/body/font/form/center/table[1]/tbody/tr[4]/td[1]/select"
@@ -27,47 +27,44 @@ def get_concesiones(request):
     xpath_boton_listado="/html/body/font/form/table[2]/tbody/tr[1]/td/img[2]"
     xpath_tabla_listado="/html/body/font/form/div/center/table/tbody"
     
-    # Configuración del navegador
+    # Configuracion del navegador
     options = Options()
     #options.add_argument("--headless")  # Ejecución sin ventana del navegador
     browser = webdriver.Chrome(executable_path='./chromedriver_linux64/chromedriver', options=options)
     
     
-    # Consulta a pagina con la tabla
+    # Consulta a la página con la tabla
     browser = webdriver.Chrome(executable_path='./chromedriver_linux64/chromedriver')
     browser.get(url)
     browser.refresh()
     
     try:
         sleep(1)
-        #Seleccionar valor II para el filtro region
+        # Seleccionar valor II para el filtro region
         lista_desplagable_region = Select(browser.find_element(by=By.XPATH, value=xpath_seleccione_region))
         lista_desplagable_region.select_by_value("2")
         sleep(1)
-        #Selecionar valor Gobernación Marítima Antofagasta para el filtro gobernacion maritima
+        # Selecionar valor Gobernación Maritima Antofagasta para el filtro gobernacion maritima
         lista_desplagable_gobernacion_maritima = Select(browser.find_element(by=By.XPATH, value=xpath_seleccione_gobernacion_maritima))
         lista_desplagable_gobernacion_maritima.select_by_value("12")
-        #Selecionar valor Antofagasta para el filtro Capitanía de Puerto
+        # Selecionar valor Antofagasta para el filtro Capitanía de Puerto
         sleep(1)
         lista_desplagable_capitania_puerto = Select(browser.find_element(by=By.XPATH, value=xpath_seleccione_capitania_puerto))
         lista_desplagable_capitania_puerto.select_by_value("13") 
-        #Realizar click en el boton ver listado y esperar a que muestre la tabla con los datos
+        # Realizar clic en el boton "Ver Listado" y esperar a que muestre la tabla con los datos
         boton_element_listado = browser.find_element(by=By.XPATH, value=xpath_boton_listado).click()
         wait = WebDriverWait(browser,20)
         wait.until(EC.presence_of_element_located((By.XPATH, xpath_tabla_listado)))
         
-        #Extraer datos de la tabla con los datos filtrados
         
-        # extraer datos de paginacion
+        # Extraer datos de paginacion
         navegacion_tabla = browser.find_element(by=By.XPATH,value="/html/body/font/form/p[4]/font/table/tbody")
         
         for objetivo in navegacion_tabla.find_elements_by_tag_name('td'):
             numeros_navegacion_tabla.append(objetivo.text)
         numeros_navegacion_tabla.pop(0)
 
-        ###################################
-        
-        ### extraccion de datos primera pagina
+        # Extraer datos de la primera pagina
         thead = browser.find_element(by=By.XPATH, value=xpath_tabla_listado)
         for tr in thead.find_elements(by=By.TAG_NAME, value='tr'):
             datos_fila = []
@@ -76,13 +73,11 @@ def get_concesiones(request):
                 datos_fila.append(datos_celda)
             datos_tabla.append(datos_fila)
         datos_tabla.pop(0)
-        #######################################
 
-        # Navegando en las paginas de la tabla
+        # Navegar en las páginas de la tabla
         for i in numeros_navegacion_tabla:
             browser.find_element(by=By.XPATH,value=f"/html/body/font/form/p[4]/font/table/tbody/tr/td[{i}]/font/a").click()
-
-            ### extraccion de datos de la vista
+            # Extraer datos de la vista
             thead = browser.find_element(by=By.XPATH, value=xpath_tabla_listado)
             for tr in thead.find_elements(by=By.TAG_NAME, value='tr')[1:]:
                 datos_fila = []
@@ -90,18 +85,15 @@ def get_concesiones(request):
                     datos_celda = td.text  # Separar cada columna en elementos individuales
                     datos_fila.append(datos_celda)
                 datos_tabla.append(datos_fila)
-        #########################################    
-            
             
         browser.quit()
-            
         
         # Creacion de archivo .json
         nombre_archivo = "output_datos_tabla.json"
         with open(nombre_archivo, "w") as archivo_json:
             dump(datos_tabla, archivo_json)
 
-        #insercion de datos a tabla reto2_concesionesmaritimas
+        # Insercion de datos a la tabla reto2_concesionesmaritimas
         for fila in datos_tabla:
             instancia_concesion = concesionesMaritimas(numero_id=int(fila[0]), 
                                         numero_concesion=int(fila[1]), 
@@ -113,14 +105,10 @@ def get_concesiones(request):
                                         concersionario=fila[7],
                                         tipo_vigencia=fila[8])
             instancia_concesion.save()
-
-    
-    
         return HttpResponse(datos_tabla)
-         
     except Exception as exception:
         return HttpResponse('[ERROR] ' + f'{exception.__class__.__name__}: {exception}')
-    
+
     finally:
         browser.quit()
 

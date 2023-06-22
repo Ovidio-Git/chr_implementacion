@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
+
+# Creacion modelo para guardar las conseciones maritimas
 class concesionesMaritimas(models.Model):
     numero_id = models.IntegerField(primary_key=True)
     numero_concesion = models.IntegerField()
