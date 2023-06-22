@@ -68,14 +68,25 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-Abrir navegador web y visitar http://localhost:8000 para ver la aplicación en funcionamiento.
+- Abrir navegador web y visitar http://localhost:8000 para ver la aplicación en funcionamiento.
 
 
 3. Ejecutar el proceso que da solucion al reto 1
 
-Consultar la url ttp://localhost:8000/get_jurisprudencia/
+Consultar mediante el navegador la url
+
+```shell
+ http://localhost:8000/get_jurisprudencia/
+```
+
+
 
 4. Ejecutar el proceso que da solucion al reto 2
 
-Consultar la url ttp://localhost:8000/get_concesiones/
+Consultar mediante el navegador la url
+
+```shell
+ http://localhost:8000/get_concesiones/
+```
+
 
