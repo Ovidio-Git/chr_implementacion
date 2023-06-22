@@ -5,14 +5,14 @@ Solucion a retos planteados en el test practico.
 ## Resumen
 
 Para el reto se implemento un proyecto en django 4.0 el cual recibe el nombre app_chr este contiene los siguientes archivos
--app_chr: carpeta con la configuracion incial de django
--reto1: carpeta la cual cuenta con los archivos del codigo de la tarea 1
--reto2: carpeta la cual cuenta con los archivos del codigo de la tarea 2
--chromedriver_linux64: carpeta la cual contiene el driver de chrome selenium web dirver libreria la cual se usa en el reto2
--.env: archivo el cual contiene las credenciales para la conexion con la base de datos postgresql
--manage.py: archivo incial de django
--output_datos_tabla.json: archivo resultante del reto2
--requirements.txt: archivo el cual contiene los requerimientos del proyecto
+- app_chr: carpeta con la configuracion incial de django
+- reto1: carpeta la cual cuenta con los archivos del codigo de la tarea 1
+- reto2: carpeta la cual cuenta con los archivos del codigo de la tarea 2
+- chromedriver_linux64: carpeta la cual contiene el driver de chrome selenium web dirver libreria la cual se usa en el reto2
+- .env: archivo el cual contiene las credenciales para la conexion con la base de datos postgresql
+- manage.py: archivo incial de django
+- output_datos_tabla.json: archivo resultante del reto2
+- requirements.txt: archivo el cual contiene los requerimientos del proyecto
 
 ### Reto 1
 
